@@ -1,9 +1,11 @@
 package com.hexagonal.domain;
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
-public class Persona{
+public class Persona {
 
     private Long id;
     private String nombre;
