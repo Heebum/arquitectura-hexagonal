@@ -1,6 +1,6 @@
 package com.hexagonal.infrastructure.rest.controller;
 
-import com.hexagonal.application.service.PersonaService;
+import com.hexagonal.domain.service.PersonaService;
 import com.hexagonal.domain.Persona;
 import com.hexagonal.infrastructure.rest.dto.PersonaEntityDto;
 import com.hexagonal.infrastructure.rest.mapper.PersonaMapper;
@@ -33,6 +33,7 @@ public class PersonaController {
     })
     @PostMapping(value = "/persona", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> create(@RequestBody PersonaEntityDto personaEntityDto){
+
         try {
             return new ResponseEntity<>(personaMapper.toDto(personaService.save(personaMapper.toDomain(personaEntityDto))),HttpStatus.CREATED);
         }catch (Exception e){

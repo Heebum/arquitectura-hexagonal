@@ -1,11 +1,8 @@
 package com.hexagonal.domain;
 
 
-import com.hexagonal.application.service.exceptions.PersonaNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PersonaTest {
     @Test

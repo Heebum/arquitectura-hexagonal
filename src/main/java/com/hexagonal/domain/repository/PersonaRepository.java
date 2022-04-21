@@ -1,4 +1,4 @@
-package com.hexagonal.application.repository;
+package com.hexagonal.domain.repository;
 
 import com.hexagonal.domain.Persona;
 

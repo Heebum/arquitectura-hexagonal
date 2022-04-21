@@ -1,4 +1,4 @@
-package com.hexagonal.application.service.exceptions;
+package com.hexagonal.application.exceptions;
 
 public class PersonaNotFoundException extends RuntimeException{
 

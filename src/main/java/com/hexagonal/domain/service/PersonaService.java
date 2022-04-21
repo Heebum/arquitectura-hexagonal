@@ -1,6 +1,6 @@
-package com.hexagonal.application.service;
+package com.hexagonal.domain.service;
 
-import com.hexagonal.application.repository.PersonaRepository;
+import com.hexagonal.domain.repository.PersonaRepository;
 import com.hexagonal.domain.Persona;
 
 public class PersonaService {
