@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 public class ImagenService {
 
@@ -42,12 +43,41 @@ public class ImagenService {
                 .getEncoder()
                 .encodeToString(fileContent);
         image.setFoto(encodedString);
-        Persona persona = personaRepository.getById(Long.valueOf(fk_persona));
-        if (persona.getId() < 0){
-            throw new PersonaNotFoundException(persona.getId());
+
+        Optional<Persona> persona = Optional.ofNullable(personaRepository.getById(Long.valueOf(fk_persona)));
+        if (persona.isEmpty()){
+            throw new PersonaNotFoundException(Long.valueOf(fk_persona));
         }
-        image.setPersona(persona);
+        image.setPersona(persona.orElseThrow());
 
         return imagenRepository.save(image);
+    }
+    public ImagenMongo update(MultipartFile file, String fk_persona, String _id) throws IOException {
+
+        Optional<ImagenMongo> imagenMongo = Optional.ofNullable(imagenRepository.getById(_id));
+        if (imagenMongo.isEmpty()){
+            throw new ImagenNotFoundException(_id);
+        }
+        ImagenMongo update = imagenMongo.orElseThrow();
+        byte[] fileContent = file.getBytes();
+        String encodedString = Base64
+                .getEncoder()
+                .encodeToString(fileContent);
+        update.setFoto(encodedString);
+        Optional<Persona> persona1 = Optional.ofNullable(personaRepository.getById(Long.valueOf(fk_persona)));
+        if (persona1.isEmpty()){
+            throw new PersonaNotFoundException(Long.valueOf(fk_persona));
+        }
+        update.setPersona(persona1.orElseThrow());
+        imagenRepository.update(file,fk_persona,_id);
+        return update;
+    }
+    public ImagenMongo delete(String _id){
+        Optional<ImagenMongo> imagenMongo = Optional.ofNullable(imagenRepository.getById(_id));
+        if (imagenMongo.isEmpty()){
+            throw new ImagenNotFoundException(_id);
+        }
+
+        return imagenRepository.delete(_id);
     }
 }

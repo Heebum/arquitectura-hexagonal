@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ApiResponse;
 
-@RequestMapping("/api")
+@RequestMapping("/api/persona")
 @RestController
 public class PersonaController {
 
@@ -31,8 +31,8 @@ public class PersonaController {
             @ApiResponse(code = 400, message = "Bad Request", response = String.class),
             @ApiResponse(code = 500, message = "Internal Server Error", response = String.class)
     })
-    @PostMapping(value = "/persona", produces = "application/json; charset=UTF-8")
-    public ResponseEntity<Object> create(@RequestBody PersonaEntityDto personaEntityDto){
+    @PostMapping(produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Object> createPerson(@RequestBody PersonaEntityDto personaEntityDto){
 
         try {
             return new ResponseEntity<>(personaMapper.toDto(personaService.save(personaMapper.toDomain(personaEntityDto))),HttpStatus.CREATED);
@@ -49,7 +49,7 @@ public class PersonaController {
             @ApiResponse(code=404, message="Not Found", response=String.class),
             @ApiResponse(code=500, message="Internal Server Error", response=String.class)
     })
-    @GetMapping(value = "/persona/{id}", produces = "application/json; charset=UTF-8")
+    @GetMapping(value = "/{id}", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getPersonaById(@PathVariable Long id){
         try {
             return new ResponseEntity<>(personaMapper.toDto(personaService.findPersonaById(id)), HttpStatus.OK);
@@ -59,5 +59,38 @@ public class PersonaController {
             return new ResponseEntity<>(errors,HttpStatus.NOT_FOUND);
         }
 
+    }
+
+    @GetMapping(produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Object> findAllPerson(String s){
+        try {
+            return new ResponseEntity<>(personaMapper.toAllDto(personaService.findPersonaAll()),HttpStatus.OK);
+        }catch (Exception e){
+            Map<String,String> errors = new HashMap<>();
+            errors.put("mensaje",e.getMessage());
+            return new ResponseEntity<>(errors,HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(value = "/{id}",produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Object> updatePerson(@PathVariable Long id, @RequestBody PersonaEntityDto personaEntityDto){
+        try {
+            return new ResponseEntity<>(personaMapper.toDto(personaService.update(personaMapper.toDomain(personaEntityDto),id)),HttpStatus.OK);
+        }catch (Exception e){
+            Map<String,String> errors = new HashMap<>();
+            errors.put("mensaje",e.getMessage());
+            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping(value = "/{id}",produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Object> deletePerson(@PathVariable Long id){
+        try {
+            return new ResponseEntity<>(personaMapper.toDto(personaService.delete(id)),HttpStatus.OK);
+        }catch (Exception e){
+            Map<String,String> errors = new HashMap<>();
+            errors.put("mensaje",e.getMessage());
+            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+        }
     }
 }

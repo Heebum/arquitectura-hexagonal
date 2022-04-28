@@ -31,10 +31,9 @@ public class ImagenController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = String.class)
     })
     @PostMapping(produces = "application/json; charset=UTF-8")
-    public ResponseEntity<Object> create(@RequestParam("file") MultipartFile imageFile, @RequestParam String fk_persona){
+    public ResponseEntity<Object> createImage(@RequestParam("file") MultipartFile imageFile, @RequestParam String fk_persona){
         try {
             return new ResponseEntity<>(imagenMapper.toDto(imagenService.save(imageFile,fk_persona)), HttpStatus.CREATED);
-
         }catch (Exception e){
             Map<String,String> errors = new HashMap<>();
             errors.put("mensaje",e.getMessage());
@@ -70,5 +69,26 @@ public class ImagenController {
             return new ResponseEntity<>(errors,HttpStatus.NOT_FOUND);
         }
 
+    }
+    @PutMapping(value = "/{id}",produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Object> updateImage(@RequestParam String _id, @RequestParam("file") MultipartFile imageFile, @RequestParam String fk_persona){
+        try {
+            return new ResponseEntity<>(imagenMapper.toDto(imagenService.update(imageFile,fk_persona,_id)), HttpStatus.CREATED);
+        }catch (Exception e){
+            Map<String,String> errors = new HashMap<>();
+            errors.put("mensaje",e.getMessage());
+            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping(value = "/{id}",produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Object> deleteImage(@PathVariable String _id){
+        try {
+            return new ResponseEntity<>(imagenMapper.toDto(imagenService.delete(_id)),HttpStatus.OK);
+        }catch (Exception e){
+            Map<String,String> errors = new HashMap<>();
+            errors.put("mensaje",e.getMessage());
+            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+        }
     }
 }

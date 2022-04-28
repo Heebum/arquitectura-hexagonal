@@ -11,5 +11,6 @@ import java.util.List;
 public interface ImagenEntityMapper {
     ImagenMongo toDomainDb(ImagenMongoEntity imagenMongoEntity);
     ImagenMongoEntity toDb(ImagenMongo imagenMongo);
-    Collection<ImagenMongo> toAllDto(List<ImagenMongoEntity> imagenMongoEntity);
+    Collection<ImagenMongo> toAllDb(List<ImagenMongoEntity> imagenMongoEntity);
+
 }
