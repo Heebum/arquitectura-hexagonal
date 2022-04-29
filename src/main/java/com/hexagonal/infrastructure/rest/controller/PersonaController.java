@@ -34,13 +34,15 @@ public class PersonaController {
     @PostMapping(produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> createPerson(@RequestBody PersonaEntityDto personaEntityDto){
 
-        try {
-            return new ResponseEntity<>(personaMapper.toDto(personaService.save(personaMapper.toDomain(personaEntityDto))),HttpStatus.CREATED);
-        }catch (Exception e){
-            Map<String,String> errors = new HashMap<>();
-            errors.put("mensaje",e.getMessage());
-            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(personaMapper.toDto(personaService.save(personaMapper.toDomain(personaEntityDto))),HttpStatus.CREATED);
+
+//        try {
+//
+//        }catch (Exception e){
+//            Map<String,String> errors = new HashMap<>();
+//            errors.put("mensaje",e.getMessage());
+//            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+//        }
 
     }
     @ApiOperation(value="Obtener persona por id", notes="Proporciona una operación para obtener un objeto Persona por su identificador")
@@ -61,8 +63,14 @@ public class PersonaController {
 
     }
 
+    @ApiOperation(value="Obtener todas las persona", notes="Proporciona una operación para obtener todas las Persona")
+    @ApiResponses(value={
+            @ApiResponse(code=200, message="OK", response= Persona.class),
+            @ApiResponse(code=404, message="Not Found", response=String.class),
+            @ApiResponse(code=500, message="Internal Server Error", response=String.class)
+    })
     @GetMapping(produces = "application/json; charset=UTF-8")
-    public ResponseEntity<Object> findAllPerson(String s){
+    public ResponseEntity<Object> findAllPerson(){
         try {
             return new ResponseEntity<>(personaMapper.toAllDto(personaService.findPersonaAll()),HttpStatus.OK);
         }catch (Exception e){
@@ -72,25 +80,34 @@ public class PersonaController {
         }
     }
 
+    @ApiOperation(value="Actualizar persona por id", notes="Proporciona una operación para actualizar un objeto Persona por su identificador")
+    @ApiResponses(value={
+            @ApiResponse(code=200, message="OK", response= Persona.class),
+            @ApiResponse(code=404, message="Not Found", response=String.class),
+            @ApiResponse(code=500, message="Internal Server Error", response=String.class)
+    })
     @PutMapping(value = "/{id}",produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> updatePerson(@PathVariable Long id, @RequestBody PersonaEntityDto personaEntityDto){
+
         try {
             return new ResponseEntity<>(personaMapper.toDto(personaService.update(personaMapper.toDomain(personaEntityDto),id)),HttpStatus.OK);
         }catch (Exception e){
             Map<String,String> errors = new HashMap<>();
             errors.put("mensaje",e.getMessage());
-            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errors,HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping(value = "/{id}",produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> deletePerson(@PathVariable Long id){
-        try {
-            return new ResponseEntity<>(personaMapper.toDto(personaService.delete(id)),HttpStatus.OK);
-        }catch (Exception e){
-            Map<String,String> errors = new HashMap<>();
-            errors.put("mensaje",e.getMessage());
-            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
-        }
+
+        return new ResponseEntity<>(personaMapper.toDto(personaService.delete(id)),HttpStatus.OK);
+//        try {
+//
+//        }catch (Exception e){
+//            Map<String,String> errors = new HashMap<>();
+//            errors.put("mensaje",e.getMessage());
+//            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+//        }
     }
 }

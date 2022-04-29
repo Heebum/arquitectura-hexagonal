@@ -12,14 +12,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -121,18 +130,67 @@ class PersonaControllerTest {
     }
 
     @Test
-    void findPersonaAllException(){
-//        Exception exception = assertThrows(RuntimeException.class, ()->{
-//            personaService.findPersonaAll();
-//        }, ()-> "Error "+RuntimeException.class.getSimpleName());
-//        assertEquals("No existen personas" , exception.getMessage());
-//        assertNotNull(exception);
+    void findPersonaAllException() throws Exception{
+        HashMap errors = new HashMap<>();
+        errors.put("mensaje","No existen personas");
+        String user = objectMapper.writeValueAsString(errors);
+
+        when(personaService.findPersonaAll()).thenThrow(RuntimeException.class);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/persona");
+        MvcResult result = mvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+    }
+    @Test
+    void findPersonaByIdException() throws Exception{
+//        HashMap errors = new HashMap<>();
+//        errors.put("mensaje","Persona con id=1 no existe");
+//        String user = objectMapper.writeValueAsString(errors);
+
+        when(personaService.findPersonaById(persona.getId())).thenThrow(PersonaNotFoundException.class);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/persona/1");
+        MvcResult result = mvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+    }
+    @Test
+    void createPersonaException() throws Exception{
+//        HashMap errors = new HashMap<>();
+//        errors.put("mensaje","No existen personas");
+//        String user = objectMapper.writeValueAsString(errors);
+
+        lenient().when(personaService.save(any())).thenThrow(RuntimeException.class);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/persona");
+        MvcResult result = mvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        System.out.println("response "+response.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+//        verify(personaService,times(1)).save(any());
+    }
+    @Test
+    void updatePersonaException() throws Exception{
+//        HashMap errors = new HashMap<>();
+//        errors.put("mensaje","Persona con id=10 no existe");
+//        String user = objectMapper.writeValueAsString(errors);
+        lenient().when(personaService.findPersonaById(Mockito.any())).thenThrow(PersonaNotFoundException.class);
+        lenient().when(personaService.update(any(Persona.class),any())).thenThrow(PersonaNotFoundException.class);
 
 
-//        PersonaController dictMock = mock(PersonaController.class);
-        doThrow(new RuntimeException("No existen personas")).when(personaService).findPersonaAll().isEmpty();
-//        when(personaService.findPersonaAll()).thenThrow( new PersonaNotFoundException(persona.getId()));
+//        lenient().when(personaService.update(any(),anyLong())).thenThrow(new PersonaNotFoundException(persona.getId()));
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/persona/10");
+        MvcResult result = mvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        System.out.println("response "+response.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 
-//         personaController.findAllPerson("No existen personas");
+//        mvc.perform(put("/api/persona/10")
+//                .content(user)
+//                .contentType(MediaType.APPLICATION_JSON))
+//			.andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE))
+
+//                .andExpect(status().isBadRequest());
+
+//        verify(personaService,times(1)).save(any());
     }
 }
