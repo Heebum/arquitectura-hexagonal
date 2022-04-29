@@ -143,9 +143,6 @@ class PersonaControllerTest {
     }
     @Test
     void findPersonaByIdException() throws Exception{
-//        HashMap errors = new HashMap<>();
-//        errors.put("mensaje","Persona con id=1 no existe");
-//        String user = objectMapper.writeValueAsString(errors);
 
         when(personaService.findPersonaById(persona.getId())).thenThrow(PersonaNotFoundException.class);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/persona/1");
@@ -155,9 +152,6 @@ class PersonaControllerTest {
     }
     @Test
     void createPersonaException() throws Exception{
-//        HashMap errors = new HashMap<>();
-//        errors.put("mensaje","No existen personas");
-//        String user = objectMapper.writeValueAsString(errors);
 
         lenient().when(personaService.save(any())).thenThrow(RuntimeException.class);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/persona");
@@ -165,19 +159,14 @@ class PersonaControllerTest {
         MockHttpServletResponse response = result.getResponse();
         System.out.println("response "+response.getStatus());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-
-//        verify(personaService,times(1)).save(any());
     }
     @Test
     void updatePersonaException() throws Exception{
 //        HashMap errors = new HashMap<>();
 //        errors.put("mensaje","Persona con id=10 no existe");
 //        String user = objectMapper.writeValueAsString(errors);
-        lenient().when(personaService.findPersonaById(Mockito.any())).thenThrow(PersonaNotFoundException.class);
+        lenient().when(personaService.findPersonaById(persona.getId())).thenThrow(PersonaNotFoundException.class);
         lenient().when(personaService.update(any(Persona.class),any())).thenThrow(PersonaNotFoundException.class);
-
-
-//        lenient().when(personaService.update(any(),anyLong())).thenThrow(new PersonaNotFoundException(persona.getId()));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/persona/10");
         MvcResult result = mvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse response = result.getResponse();
@@ -188,9 +177,17 @@ class PersonaControllerTest {
 //                .content(user)
 //                .contentType(MediaType.APPLICATION_JSON))
 //			.andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE))
-
 //                .andExpect(status().isBadRequest());
-
 //        verify(personaService,times(1)).save(any());
+    }
+    @Test
+    void deletePersonaByIdException() throws Exception{
+
+        lenient().when(personaService.findPersonaById(persona.getId())).thenThrow(PersonaNotFoundException.class);
+        lenient().when(personaService.delete(anyLong())).thenThrow(PersonaNotFoundException.class);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/persona/1");
+        MvcResult result = mvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = result.getResponse();
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
     }
 }

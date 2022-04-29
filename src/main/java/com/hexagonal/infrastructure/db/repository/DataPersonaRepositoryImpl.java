@@ -40,10 +40,6 @@ public class DataPersonaRepositoryImpl implements PersonaRepository {
     @Override
     public Persona update(Persona persona, Long id) {
         PersonaEntity persona1 = (dataPersonaRepository.findById(id).orElseThrow( ()-> new PersonaNotFoundException(id)));
-//        if (persona1.getId()<0){
-//            throw new PersonaNotFoundException(id);
-//        }
-//        PersonaEntity persona2 = persona1;
         persona1.setNombre(persona.getNombre());
         persona1.setApellido(persona.getApellido());
         persona1.setEdad(persona.getEdad());

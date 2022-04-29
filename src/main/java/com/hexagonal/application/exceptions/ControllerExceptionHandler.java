@@ -31,7 +31,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(PersonaNotFoundException.class)
-    public ResponseEntity<ErrorMessage> resourceNotFoundException(PersonaNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ErrorMessage> personaNotFoundException(PersonaNotFoundException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),

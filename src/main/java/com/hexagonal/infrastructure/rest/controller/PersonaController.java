@@ -1,5 +1,6 @@
 package com.hexagonal.infrastructure.rest.controller;
 
+import com.hexagonal.application.exceptions.PersonaNotFoundException;
 import com.hexagonal.domain.service.PersonaService;
 import com.hexagonal.domain.Persona;
 import com.hexagonal.infrastructure.rest.dto.PersonaEntityDto;
@@ -16,8 +17,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ApiResponse;
 
-@RequestMapping("/api/persona")
 @RestController
+@RequestMapping("/api/persona")
 public class PersonaController {
 
     @Autowired
@@ -36,14 +37,6 @@ public class PersonaController {
 
         return new ResponseEntity<>(personaMapper.toDto(personaService.save(personaMapper.toDomain(personaEntityDto))),HttpStatus.CREATED);
 
-//        try {
-//
-//        }catch (Exception e){
-//            Map<String,String> errors = new HashMap<>();
-//            errors.put("mensaje",e.getMessage());
-//            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
-//        }
-
     }
     @ApiOperation(value="Obtener persona por id", notes="Proporciona una operación para obtener un objeto Persona por su identificador")
     @ApiResponses(value={
@@ -52,14 +45,17 @@ public class PersonaController {
             @ApiResponse(code=500, message="Internal Server Error", response=String.class)
     })
     @GetMapping(value = "/{id}", produces = "application/json; charset=UTF-8")
-    public ResponseEntity<Object> getPersonaById(@PathVariable Long id){
-        try {
+    public ResponseEntity<Object> getPersonaById(@PathVariable Long id) throws PersonaNotFoundException {
+//        return ResponseEntity.ok(personaMapper.toDto(personaService.findPersonaById(id)));
+
+//        try {
             return new ResponseEntity<>(personaMapper.toDto(personaService.findPersonaById(id)), HttpStatus.OK);
-        }catch (Exception e){
-            Map<String,String> errors = new HashMap<>();
-            errors.put("mensaje",e.getMessage());
-            return new ResponseEntity<>(errors,HttpStatus.NOT_FOUND);
-        }
+//        }catch (PersonaNotFoundException ex){
+//            Map<String,String> errors = new HashMap<>();
+//            errors.put("mensaje",e.getMessage());
+//            return new ResponseEntity<>(errors,HttpStatus.NOT_FOUND);
+//            throw new ResponseStatusException<ErrorMessage>(HttpStatus.NOT_FOUND, ex.getMessage());
+//        }
 
     }
 
@@ -102,12 +98,5 @@ public class PersonaController {
     public ResponseEntity<Object> deletePerson(@PathVariable Long id){
 
         return new ResponseEntity<>(personaMapper.toDto(personaService.delete(id)),HttpStatus.OK);
-//        try {
-//
-//        }catch (Exception e){
-//            Map<String,String> errors = new HashMap<>();
-//            errors.put("mensaje",e.getMessage());
-//            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
-//        }
     }
 }

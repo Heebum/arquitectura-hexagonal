@@ -173,6 +173,8 @@
 				<version>0.8.6</version>
 				<configuration>
 					<excludes>
+						<exclude>**/application/exceptions/ControllerExceptionHandler.class</exclude>
+						<exclude>**/application/exceptions/ErrorMessage.class</exclude>
 						<exclude>**/infrastructure/db/**</exclude>
 						<exclude>**/infrastructure/rest/mapper/**</exclude>
 						<exclude>**/infrastructure/rest/dto/**</exclude>
