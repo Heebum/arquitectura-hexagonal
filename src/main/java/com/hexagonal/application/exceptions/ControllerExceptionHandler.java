@@ -1,43 +1,23 @@
 package com.hexagonal.application.exceptions;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.List;
 
 @ControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
-
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.BAD_REQUEST.value(),
-                new Date(),
-                ex.getMessage(),
-                request.getDescription(false));
-
-        return new ResponseEntity<ErrorMessage>(message, HttpStatus.BAD_REQUEST);
-    }
-
-
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(PersonaNotFoundException.class)
-    public ResponseEntity<ErrorMessage> personaNotFoundException(PersonaNotFoundException ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(
+    @ResponseBody
+    public ErrorMessage personaNotFoundException(HttpServletRequest request, PersonaNotFoundException exception){
+        return new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),
-                ex.getMessage(),
-                request.getDescription(false));
-
-        return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_FOUND);
+                exception.getMessage(),
+                request.getRequestURI()
+        );
     }
 }

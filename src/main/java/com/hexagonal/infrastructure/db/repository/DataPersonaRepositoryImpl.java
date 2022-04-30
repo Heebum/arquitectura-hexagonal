@@ -7,12 +7,13 @@ import com.hexagonal.infrastructure.db.entity.PersonaEntity;
 import com.hexagonal.infrastructure.db.mapper.PersonaEntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Transactional
 public class DataPersonaRepositoryImpl implements PersonaRepository {
 
     @Autowired
@@ -20,10 +21,13 @@ public class DataPersonaRepositoryImpl implements PersonaRepository {
     @Autowired
     PersonaEntityMapper personaEntityMapper;
 
+    private static final String PERSONA_NOT_FOUND = "Persona con id= %s no existe";
+
 
     @Override
     public Persona getById(Long id) {
-        return personaEntityMapper.toDomaindb(dataPersonaRepository.findById(id).orElseThrow( ()-> new PersonaNotFoundException(id)));
+        PersonaEntity data = dataPersonaRepository.findById(id).orElseThrow(()-> new PersonaNotFoundException(String.format(PERSONA_NOT_FOUND,id)));
+        return personaEntityMapper.toDomaindb(data);
     }
     @Override
     public Persona save(Persona persona) {
@@ -39,7 +43,7 @@ public class DataPersonaRepositoryImpl implements PersonaRepository {
 
     @Override
     public Persona update(Persona persona, Long id) {
-        PersonaEntity persona1 = (dataPersonaRepository.findById(id).orElseThrow( ()-> new PersonaNotFoundException(id)));
+        PersonaEntity persona1 = (dataPersonaRepository.findById(id).orElseThrow( ()-> new PersonaNotFoundException(String.format(PERSONA_NOT_FOUND,id))));
         persona1.setNombre(persona.getNombre());
         persona1.setApellido(persona.getApellido());
         persona1.setEdad(persona.getEdad());
@@ -50,11 +54,7 @@ public class DataPersonaRepositoryImpl implements PersonaRepository {
 
     @Override
     public Persona delete(Long id) {
-        Optional persona1 = dataPersonaRepository.findById(id);
-        if (persona1.isEmpty()){
-            throw new PersonaNotFoundException(id);
-        }
-        PersonaEntity persona = dataPersonaRepository.findById(id).get();
+        PersonaEntity persona = dataPersonaRepository.findById(id).orElseThrow( ()-> new PersonaNotFoundException(String.format(PERSONA_NOT_FOUND,id)));
         dataPersonaRepository.deleteById(id);
         return personaEntityMapper.toDomaindb(persona);
     }

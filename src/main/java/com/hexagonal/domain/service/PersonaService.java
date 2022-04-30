@@ -36,7 +36,7 @@ public class PersonaService {
     public Persona update(Persona persona, Long id){
         Optional<Persona> persona1 = Optional.ofNullable(personaRepository.getById(id));
         if (persona1.isEmpty()){
-            throw new PersonaNotFoundException(id);
+            throw new PersonaNotFoundException(String.format("Persona con id= %s no existe",id));
         }
         Persona personaUpdt =persona1.get();
         personaUpdt.setNombre(persona.getNombre());
@@ -51,7 +51,7 @@ public class PersonaService {
     public Persona delete(Long id){
         Optional<Persona> persona1 = Optional.ofNullable(personaRepository.getById(id));
         if (persona1.isEmpty()){
-            throw new PersonaNotFoundException(id);
+            throw new PersonaNotFoundException(String.format("Persona con id= %s no existe",id));
         }
         return personaRepository.delete(id);
     }

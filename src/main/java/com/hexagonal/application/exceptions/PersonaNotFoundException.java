@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class PersonaNotFoundException extends RuntimeException{
     private static final long serialVersionUID = 1L;
 
-    public PersonaNotFoundException(Long id){
-        super(String.format("Persona con id= %s no existe",id));
+    public PersonaNotFoundException(String msg){
+        super(msg);
     }
 }

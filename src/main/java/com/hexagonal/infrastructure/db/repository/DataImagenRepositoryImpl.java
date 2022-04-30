@@ -57,7 +57,7 @@ public class DataImagenRepositoryImpl implements ImagenRepository{
                 .encodeToString(fileContent);
         image.setFoto(encodedString);
 
-        PersonaEntity persona1 = dataPersonaRepository.findById(Long.valueOf(fk_persona)).orElseThrow( ()-> new PersonaNotFoundException(Long.valueOf(fk_persona)));
+        PersonaEntity persona1 = dataPersonaRepository.findById(Long.valueOf(fk_persona)).orElseThrow( ()-> new PersonaNotFoundException(String.format("Persona con id= %s no existe",fk_persona)));
         image.setPersona(personaEntityMapper.toDomaindb(persona1));
 
         return imagenEntityMapper.toDomainDb(dataImagenRepository.save(image));

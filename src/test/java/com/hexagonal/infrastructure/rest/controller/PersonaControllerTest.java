@@ -1,6 +1,5 @@
 package com.hexagonal.infrastructure.rest.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hexagonal.application.exceptions.PersonaNotFoundException;
 import com.hexagonal.domain.Persona;
@@ -12,12 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -28,8 +25,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,14 +62,10 @@ class PersonaControllerTest {
         persona.setEdad("30");
         persona.setCiudad("soledad");
         persona.setId(1L);
-
     }
-
 
     @Test
     void createPersonTest() throws Exception {
-//        PersonaEntityDto dto = new PersonaEntityDto("frank","castro","29","malambo");
-//
         mvc.perform(post("/api/persona").
                         contentType(MediaType.APPLICATION_JSON).
                         content(objectMapper.writeValueAsString(personaDto))).
@@ -162,9 +153,6 @@ class PersonaControllerTest {
     }
     @Test
     void updatePersonaException() throws Exception{
-//        HashMap errors = new HashMap<>();
-//        errors.put("mensaje","Persona con id=10 no existe");
-//        String user = objectMapper.writeValueAsString(errors);
         lenient().when(personaService.findPersonaById(persona.getId())).thenThrow(PersonaNotFoundException.class);
         lenient().when(personaService.update(any(Persona.class),any())).thenThrow(PersonaNotFoundException.class);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/persona/10");
@@ -172,13 +160,6 @@ class PersonaControllerTest {
         MockHttpServletResponse response = result.getResponse();
         System.out.println("response "+response.getStatus());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-
-//        mvc.perform(put("/api/persona/10")
-//                .content(user)
-//                .contentType(MediaType.APPLICATION_JSON))
-//			.andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE))
-//                .andExpect(status().isBadRequest());
-//        verify(personaService,times(1)).save(any());
     }
     @Test
     void deletePersonaByIdException() throws Exception{

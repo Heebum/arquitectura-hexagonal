@@ -45,18 +45,14 @@ public class PersonaController {
             @ApiResponse(code=500, message="Internal Server Error", response=String.class)
     })
     @GetMapping(value = "/{id}", produces = "application/json; charset=UTF-8")
-    public ResponseEntity<Object> getPersonaById(@PathVariable Long id) throws PersonaNotFoundException {
-//        return ResponseEntity.ok(personaMapper.toDto(personaService.findPersonaById(id)));
-
-//        try {
+    public ResponseEntity<Object> getPersonaById(@PathVariable Long id) {
+        try {
             return new ResponseEntity<>(personaMapper.toDto(personaService.findPersonaById(id)), HttpStatus.OK);
-//        }catch (PersonaNotFoundException ex){
-//            Map<String,String> errors = new HashMap<>();
-//            errors.put("mensaje",e.getMessage());
-//            return new ResponseEntity<>(errors,HttpStatus.NOT_FOUND);
-//            throw new ResponseStatusException<ErrorMessage>(HttpStatus.NOT_FOUND, ex.getMessage());
-//        }
-
+        }catch (PersonaNotFoundException e){
+            Map<String,String> errors = new HashMap<>();
+            errors.put("mensaje",e.getMessage());
+            return new ResponseEntity<>(errors,HttpStatus.NOT_FOUND);
+        }
     }
 
     @ApiOperation(value="Obtener todas las persona", notes="Proporciona una operación para obtener todas las Persona")
@@ -85,18 +81,11 @@ public class PersonaController {
     @PutMapping(value = "/{id}",produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> updatePerson(@PathVariable Long id, @RequestBody PersonaEntityDto personaEntityDto){
 
-        try {
-            return new ResponseEntity<>(personaMapper.toDto(personaService.update(personaMapper.toDomain(personaEntityDto),id)),HttpStatus.OK);
-        }catch (Exception e){
-            Map<String,String> errors = new HashMap<>();
-            errors.put("mensaje",e.getMessage());
-            return new ResponseEntity<>(errors,HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(personaMapper.toDto(personaService.update(personaMapper.toDomain(personaEntityDto),id)),HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}",produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> deletePerson(@PathVariable Long id){
-
         return new ResponseEntity<>(personaMapper.toDto(personaService.delete(id)),HttpStatus.OK);
     }
 }

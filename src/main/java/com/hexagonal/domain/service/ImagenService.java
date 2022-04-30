@@ -46,7 +46,7 @@ public class ImagenService {
 
         Optional<Persona> persona = Optional.ofNullable(personaRepository.getById(Long.valueOf(fk_persona)));
         if (persona.isEmpty()){
-            throw new PersonaNotFoundException(Long.valueOf(fk_persona));
+            throw new PersonaNotFoundException(String.format("Persona con id= %s no existe",fk_persona));
         }
         image.setPersona(persona.orElseThrow());
 
@@ -66,7 +66,7 @@ public class ImagenService {
         update.setFoto(encodedString);
         Optional<Persona> persona1 = Optional.ofNullable(personaRepository.getById(Long.valueOf(fk_persona)));
         if (persona1.isEmpty()){
-            throw new PersonaNotFoundException(Long.valueOf(fk_persona));
+            throw new PersonaNotFoundException(String.format("Persona con id= %s no existe",fk_persona));
         }
         update.setPersona(persona1.orElseThrow());
         imagenRepository.update(file,fk_persona,_id);
